@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>Blossom Value & Pricing Calculator</title>
 <style>html,body{margin:0;padding:0;background:#f6f8f4}@media(prefers-color-scheme:dark){html,body{background:#10140e}}:root[data-theme="dark"] body{background:#10140e}:root[data-theme="light"] body{background:#f6f8f4}</style>
 </head>
@@ -191,7 +192,7 @@
 
 <script>
 (function(){
-  var CFG={
+  var FALLBACK={
     tiers:{
       starter:{label:"Starter",rank:1,rate:1.00,minAcres:50,recMax:100,users:5,color:"--starter",bg:"--starter-bg"},
       pro:{label:"Pro",rank:2,rate:1.50,minAcres:50,recMax:1000,users:10,color:"--pro",bg:"--pro-bg"},
@@ -209,6 +210,16 @@
     crops:["Cranberry","Blueberry","Grapes","Apples","Nuts","Vegetables","Other Fruit","Other Specialty"],
     customization:[["Discovery & Data Migration",15000],["Special Project 1",0],["Special Project 2",0],["Additional Support",6000]]
   };
+  var CFG=FALLBACK;   // overridden by config.json at runtime when served over http(s)
+  var COLORS={starter:["--starter","--starter-bg"],pro:["--pro","--pro-bg"],enterprise:["--ent","--ent-bg"]};
+  function adapt(j){  // config.json (canonical) -> internal shape
+    var tiers={}; Object.keys(j.tiers).forEach(function(k){var t=j.tiers[k];var c=COLORS[k]||["--pro","--pro-bg"];
+      tiers[k]={label:t.label,rank:t.rank,rate:t.ratePerAcreMonth,minAcres:t.minBillableAcres,recMax:(t.recommendMaxAcres==null?null:t.recommendMaxAcres),users:t.userLimit,color:c[0],bg:c[1]};});
+    var order=Object.keys(tiers).sort(function(a,b){return tiers[a].rank-tiers[b].rank;});
+    return {tiers:tiers,order:order,months:j.monthsPerYear||12,
+      options:(j.options||[]).map(function(o){return [o.name,o.minTier];}),
+      crops:j.crops||[], customization:(j.customizationDefaults||[]).map(function(c){return [c.name,c.amount];})};
+  }
   var rank2key={1:"starter",2:"pro",3:"enterprise"};
   function cvar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
   function money(x){var o=(Math.round(x*100)%100===0)?{minimumFractionDigits:0,maximumFractionDigits:0}:{minimumFractionDigits:2,maximumFractionDigits:2};return x.toLocaleString("en-US",Object.assign({style:"currency",currency:"USD"},o));}
@@ -216,6 +227,7 @@
   var $=function(id){return document.getElementById(id);};
 
   // build crop dropdown, options, your-tier, customization
+  function buildUI(){
   CFG.crops.forEach(function(c){var o=document.createElement("option");o.textContent=c;$("crop").appendChild(o);});
   var optsWrap=$("opts");
   CFG.options.forEach(function(o,i){
@@ -231,6 +243,7 @@
     r.innerHTML='<input type="text" value="'+c[0]+'" data-ci="'+i+'"><input type="number" class="yellow cust-amt" min="0" step="500" value="'+c[1]+'">';
     custWrap.appendChild(r);
   });
+  }
 
   function acresRank(a){return a>1000?3:a>100?2:1;}
   function usersRank(u){return u>10?3:u>5?2:1;}
@@ -322,14 +335,22 @@
     $("custTot").textContent=money(ct);
   }
 
-  document.addEventListener("input",render);
-  document.addEventListener("change",render);
-  $("themeBtn").addEventListener("click",function(){
-    var cur=document.documentElement.getAttribute("data-theme");
-    var next=cur==="dark"?"light":cur==="light"?"dark":(matchMedia("(prefers-color-scheme:dark)").matches?"light":"dark");
-    document.documentElement.setAttribute("data-theme",next); render();
-  });
-  render();
+  function start(){
+    buildUI();
+    document.addEventListener("input",render);
+    document.addEventListener("change",render);
+    $("themeBtn").addEventListener("click",function(){
+      var cur=document.documentElement.getAttribute("data-theme");
+      var next=cur==="dark"?"light":cur==="light"?"dark":(matchMedia("(prefers-color-scheme:dark)").matches?"light":"dark");
+      document.documentElement.setAttribute("data-theme",next); render();
+    });
+    render();
+  }
+  // Single source of truth: fetch config.json when served over http(s); fall back to the baked-in copy for file:// or CSP-restricted contexts.
+  fetch("config.json",{cache:"no-store"})
+    .then(function(r){return r.ok?r.json():Promise.reject();})
+    .then(function(j){try{CFG=adapt(j);}catch(e){CFG=FALLBACK;}},function(){CFG=FALLBACK;})
+    .then(start);
 })();
 </script>
 </body>

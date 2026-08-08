@@ -1,0 +1,58 @@
+{
+  "_meta": {
+    "name": "Blossom v2 Value & Pricing Calculator — configuration",
+    "version": "2026-08-08",
+    "status": "Draft — pending final tier/feature sign-off",
+    "currency": "USD",
+    "billingUnit": "planted acre / month",
+    "notes": "Per-acre tiers. Recommended tier = the highest tier forced by acres, users, or any selected option (mirrors the CustomerValueCalculator 'BBLsNeeded' tab). Legacy migration offer replaces the old 50%/25% ramp."
+  },
+  "tiers": {
+    "starter":   { "label": "Starter",    "rank": 1, "ratePerAcreMonth": 1.00, "minBillableAcres": 50,  "monthlyMinimum": 50,  "recommendMaxAcres": 100,  "userLimit": 5 },
+    "pro":       { "label": "Pro",         "rank": 2, "ratePerAcreMonth": 1.50, "minBillableAcres": 50,  "monthlyMinimum": 75,  "recommendMaxAcres": 1000, "userLimit": 10 },
+    "enterprise":{ "label": "Enterprise",  "rank": 3, "ratePerAcreMonth": 3.00, "minBillableAcres": 100, "monthlyMinimum": 300, "recommendMaxAcres": null, "userLimit": "Unlimited" }
+  },
+  "monthsPerYear": 12,
+  "recommendation": {
+    "acresDriver":  "acres > 1000 -> Enterprise; acres > 100 -> Pro; else Starter",
+    "usersDriver":  "users > 10 -> Enterprise; users > 5 -> Pro; else Starter",
+    "optionsDriver":"highest minimum tier among selected options",
+    "recommendedTier": "highest rank of the three drivers",
+    "monthlyCost": "tier.ratePerAcreMonth * max(plantedAcres, tier.minBillableAcres)",
+    "annualCost": "monthlyCost * 12",
+    "bblsNeeded": "ceil(annualCost / pricePerBBL)",
+    "percentOfCrop": "bblsNeeded / totalProductionBBLs",
+    "belowRecommendedWarning": "shown when the chosen tier rank < recommended tier rank"
+  },
+  "options": [
+    { "name": "Equipment tracking",              "minTier": "pro" },
+    { "name": "Operations calendar",             "minTier": "pro" },
+    { "name": "Inventory tracking",              "minTier": "pro" },
+    { "name": "Blossom Pinpoint integration",    "minTier": "pro" },
+    { "name": "QuickBooks integration",          "minTier": "pro" },
+    { "name": "Farm mapping",                    "minTier": "pro" },
+    { "name": "Priority support",                "minTier": "pro" },
+    { "name": "Add-on modules",                  "minTier": "pro" },
+    { "name": "Multi-location / unlimited farms","minTier": "enterprise" },
+    { "name": "Workorders & assignments",        "minTier": "enterprise" },
+    { "name": "AI Advisor",                      "minTier": "enterprise" },
+    { "name": "Dedicated onboarding",            "minTier": "enterprise" },
+    { "name": "Personal account manager",        "minTier": "enterprise" },
+    { "name": "Premium support",                 "minTier": "enterprise" }
+  ],
+  "crops": ["Cranberry","Blueberry","Grapes","Apples","Nuts","Vegetables","Other Fruit","Other Specialty"],
+  "legacyMigrationOffer": {
+    "appliesTo": ["Legacy Blossom (v1 -> v2)", "Legacy CranTrak", "Legacy Bogs", "similar future migrations"],
+    "offerYear": 2027,
+    "offer": "Pro features at the Starter price ($1.00/acre/mo, $50/mo minimum) for one year (2027); the 100-acre Starter cap is waived.",
+    "after": "From 2028, choose a tier at standard pricing based on acres, users, and options.",
+    "timing": "No migrations before end of 2026 (CranTrak maintained; a rare adamant Blossom v1 mover is handled one-off). Expect a year-end / early-2027 migration wave."
+  },
+  "customizationDefaults": [
+    { "name": "Discovery & Data Migration", "amount": 15000 },
+    { "name": "Special Project 1", "amount": 0 },
+    { "name": "Special Project 2", "amount": 0 },
+    { "name": "Additional Support", "amount": 6000 }
+  ],
+  "customizationNote": "One-time charges; not included in the monthly/annual subscription."
+}
