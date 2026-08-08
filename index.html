@@ -63,6 +63,7 @@
   .pill{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;}
   .pill.pro{color:var(--pro);background:var(--pro-bg);}
   .pill.enterprise{color:var(--ent);background:var(--ent-bg);}
+  .soon{font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--amber);background:var(--amber-bg);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);padding:1px 6px;border-radius:999px;margin-left:6px;white-space:nowrap;}
   /* results */
   .rtop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;}
   .tchip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:5px 11px;border-radius:999px;}
@@ -200,11 +201,11 @@
     },
     order:["starter","pro","enterprise"], months:12,
     options:[
-      ["Equipment tracking","pro"],["Operations calendar","pro"],["Inventory tracking","pro"],
+      ["Equipment tracking","pro"],["Operations calendar","pro"],["Inventory tracking","pro",true],
       ["Blossom Pinpoint integration","pro"],["QuickBooks integration","pro"],["Farm mapping","pro"],
       ["Priority support","pro"],["Add-on modules","pro"],
-      ["Multi-location / unlimited farms","enterprise"],["Workorders & assignments","enterprise"],
-      ["AI Advisor","enterprise"],["Dedicated onboarding","enterprise"],
+      ["Multi-location / unlimited farms","enterprise"],["Workorders & assignments","enterprise",true],
+      ["AI Advisor","enterprise",true],["Dedicated onboarding","enterprise"],
       ["Personal account manager","enterprise"],["Premium support","enterprise"]
     ],
     crops:["Cranberry","Blueberry","Grapes","Apples","Nuts","Vegetables","Other Fruit","Other Specialty"],
@@ -217,7 +218,7 @@
       tiers[k]={label:t.label,rank:t.rank,rate:t.ratePerAcreMonth,minAcres:t.minBillableAcres,recMax:(t.recommendMaxAcres==null?null:t.recommendMaxAcres),users:t.userLimit,color:c[0],bg:c[1]};});
     var order=Object.keys(tiers).sort(function(a,b){return tiers[a].rank-tiers[b].rank;});
     return {tiers:tiers,order:order,months:j.monthsPerYear||12,
-      options:(j.options||[]).map(function(o){return [o.name,o.minTier];}),
+      options:(j.options||[]).map(function(o){return [o.name,o.minTier,!!o.comingSoon];}),
       crops:j.crops||[], customization:(j.customizationDefaults||[]).map(function(c){return [c.name,c.amount];})};
   }
   var rank2key={1:"starter",2:"pro",3:"enterprise"};
@@ -232,7 +233,7 @@
   var optsWrap=$("opts");
   CFG.options.forEach(function(o,i){
     var lab=document.createElement("label"); lab.className="opt";
-    lab.innerHTML='<input type="checkbox" data-tier="'+o[1]+'" id="opt'+i+'"><span class="nm">'+o[0]+'</span><span class="pill '+o[1]+'">'+CFG.tiers[o[1]].label+'</span>';
+    lab.innerHTML='<input type="checkbox" data-tier="'+o[1]+'" id="opt'+i+'"><span class="nm">'+o[0]+'</span>'+(o[2]?'<span class="soon">coming soon</span>':'')+'<span class="pill '+o[1]+'">'+CFG.tiers[o[1]].label+'</span>';
     optsWrap.appendChild(lab);
   });
   CFG.order.forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=CFG.tiers[k].label;$("yourTier").appendChild(o);});

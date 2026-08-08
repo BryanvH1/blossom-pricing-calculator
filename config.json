@@ -27,15 +27,15 @@
   "options": [
     { "name": "Equipment tracking",              "minTier": "pro" },
     { "name": "Operations calendar",             "minTier": "pro" },
-    { "name": "Inventory tracking",              "minTier": "pro" },
+    { "name": "Inventory tracking",              "minTier": "pro", "comingSoon": true },
     { "name": "Blossom Pinpoint integration",    "minTier": "pro" },
     { "name": "QuickBooks integration",          "minTier": "pro" },
     { "name": "Farm mapping",                    "minTier": "pro" },
     { "name": "Priority support",                "minTier": "pro" },
     { "name": "Add-on modules",                  "minTier": "pro" },
     { "name": "Multi-location / unlimited farms","minTier": "enterprise" },
-    { "name": "Workorders & assignments",        "minTier": "enterprise" },
-    { "name": "AI Advisor",                      "minTier": "enterprise" },
+    { "name": "Workorders & assignments",        "minTier": "enterprise", "comingSoon": true },
+    { "name": "AI Advisor",                      "minTier": "enterprise", "comingSoon": true },
     { "name": "Dedicated onboarding",            "minTier": "enterprise" },
     { "name": "Personal account manager",        "minTier": "enterprise" },
     { "name": "Premium support",                 "minTier": "enterprise" }
