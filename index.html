@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blossom Value & Pricing Calculator</title>
+<style>html,body{margin:0;padding:0;background:#f6f8f4}@media(prefers-color-scheme:dark){html,body{background:#10140e}}:root[data-theme="dark"] body{background:#10140e}:root[data-theme="light"] body{background:#f6f8f4}</style>
+</head>
+<body>
+<style>
+  :root{
+    --bg:#f6f8f4; --surface:#ffffff; --surface-2:#eef2ea; --text:#17210f; --muted:#5b6650;
+    --border:#e2e8dc; --brand:#60b300; --brand-deep:#1f5c2e; --brand-hover:#4d9000;
+    --starter:#2f6db0; --starter-bg:#e7f0f9; --pro:#4d9000; --pro-bg:#e9f3dc; --ent:#7a4fb0; --ent-bg:#efe7f7;
+    --amber:#9c6500; --amber-bg:#fdf1d6; --warn:#9c0006; --warn-bg:#fde7e9; --ring:rgba(96,179,0,.35);
+    --shadow:0 1px 2px rgba(20,35,10,.06),0 6px 18px rgba(20,35,10,.06); --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#10140e; --surface:#1a1f16; --surface-2:#222a1d; --text:#eef2e9; --muted:#9aa793; --border:#2c3524;
+    --brand:#7acc1a; --brand-deep:#cfe8d4; --brand-hover:#8fdc2f;
+    --starter:#79aee8; --starter-bg:#17263a; --pro:#8fdc2f; --pro-bg:#1c2a10; --ent:#b79ae0; --ent-bg:#241a33;
+    --amber:#e6b455; --amber-bg:#33290f; --warn:#f2a0a6; --warn-bg:#3a1416; --ring:rgba(122,204,26,.4);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="light"]{--bg:#f6f8f4;--surface:#ffffff;--surface-2:#eef2ea;--text:#17210f;--muted:#5b6650;--border:#e2e8dc;--brand:#60b300;--brand-deep:#1f5c2e;--brand-hover:#4d9000;--starter:#2f6db0;--starter-bg:#e7f0f9;--pro:#4d9000;--pro-bg:#e9f3dc;--ent:#7a4fb0;--ent-bg:#efe7f7;--amber:#9c6500;--amber-bg:#fdf1d6;--warn:#9c0006;--warn-bg:#fde7e9;--ring:rgba(96,179,0,.35);--shadow:0 1px 2px rgba(20,35,10,.06),0 6px 18px rgba(20,35,10,.06);}
+  :root[data-theme="dark"]{--bg:#10140e;--surface:#1a1f16;--surface-2:#222a1d;--text:#eef2e9;--muted:#9aa793;--border:#2c3524;--brand:#7acc1a;--brand-deep:#cfe8d4;--brand-hover:#8fdc2f;--starter:#79aee8;--starter-bg:#17263a;--pro:#8fdc2f;--pro-bg:#1c2a10;--ent:#b79ae0;--ent-bg:#241a33;--amber:#e6b455;--amber-bg:#33290f;--warn:#f2a0a6;--warn-bg:#3a1416;--ring:rgba(122,204,26,.4);--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);}
+  *{box-sizing:border-box}
+  .bp{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.5;padding:clamp(16px,3vw,30px);min-height:100%;-webkit-font-smoothing:antialiased;}
+  .in{max-width:1060px;margin:0 auto;}
+  .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  h1{font-size:clamp(20px,3vw,27px);font-weight:800;letter-spacing:-.02em;margin:0;color:var(--brand-deep);}
+  .sub{color:var(--muted);font-size:14px;margin:2px 0 0;}
+  .badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);background:var(--amber-bg);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);padding:3px 8px;border-radius:999px;margin-top:8px;}
+  .tog{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--shadow);}
+  .tog:hover{border-color:var(--brand)}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;}
+  @media(min-width:820px){.grid{grid-template-columns:360px 1fr;align-items:start;}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+  .card h2{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+  .fld{margin-bottom:13px;}
+  .fld:last-child{margin-bottom:0;}
+  label.l{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+  .yellow{background:var(--amber-bg);}
+  input[type=number],select{width:100%;font:inherit;font-size:15px;font-variant-numeric:tabular-nums;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);}
+  input.yellow{border-color:color-mix(in srgb,var(--amber) 45%,transparent);}
+  input:focus-visible,select:focus-visible{outline:3px solid var(--ring);outline-offset:1px;border-color:var(--brand);}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .switch{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+  .switch input{position:absolute;opacity:0;width:0;height:0;}
+  .trk{width:44px;height:25px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);position:relative;transition:.15s;flex:none;}
+  .knb{position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:.15s;}
+  .switch input:checked+.trk{background:var(--brand);border-color:var(--brand);}
+  .switch input:checked+.trk .knb{left:21px;}
+  .switch input:focus-visible+.trk{outline:3px solid var(--ring);outline-offset:2px;}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:5px;}
+  .opts{display:grid;grid-template-columns:1fr;gap:2px;}
+  .opt{display:flex;align-items:center;gap:9px;padding:6px 6px;border-radius:8px;cursor:pointer;}
+  .opt:hover{background:var(--surface-2);}
+  .opt input{width:16px;height:16px;accent-color:var(--brand);flex:none;}
+  .opt .nm{font-size:13px;flex:1;}
+  .pill{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;}
+  .pill.pro{color:var(--pro);background:var(--pro-bg);}
+  .pill.enterprise{color:var(--ent);background:var(--ent-bg);}
+  /* results */
+  .rtop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+  .tchip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:5px 11px;border-radius:999px;}
+  .price{font-size:clamp(34px,6vw,50px);font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;margin:12px 0 2px;}
+  .price .per{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0;}
+  .sl{color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums;}
+  .warn{margin-top:12px;padding:9px 12px;border-radius:10px;background:var(--warn-bg);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);color:var(--warn);font-size:13px;font-weight:600;}
+  .legacy-note{margin-top:12px;padding:9px 12px;border-radius:10px;background:var(--pro-bg);border:1px solid color-mix(in srgb,var(--pro) 38%,transparent);color:var(--brand-deep);font-size:12.5px;}
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;}
+  @media(min-width:520px){.metrics{grid-template-columns:repeat(4,1fr);}}
+  .metric{border:1px solid var(--border);border-radius:11px;padding:10px 12px;background:var(--surface);}
+  .metric .k{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+  .metric .v{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px;}
+  .drivers{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+  .drivers .dh{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .drow{display:flex;justify-content:space-between;font-size:13px;padding:2px 0;}
+  .drow .dt{font-weight:700;}
+  .yt{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;}
+  .yt label{font-size:12px;font-weight:600;color:var(--muted);}
+  .yt select{width:auto;min-width:150px;}
+  .compare{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;}
+  .tc{border:1px solid var(--border);border-radius:12px;padding:11px;position:relative;background:var(--surface);}
+  .tc.sel{border-color:var(--brand);box-shadow:0 0 0 2px var(--ring);}
+  .tc .tn{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+  .tc .tp{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:5px;}
+  .tc .tm{font-size:11px;color:var(--muted);margin-top:2px;}
+  .tc .rec{position:absolute;top:-9px;right:9px;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:var(--brand);color:#08260a;padding:2px 7px;border-radius:999px;}
+  .cust{margin-top:16px;}
+  .custrow{display:grid;grid-template-columns:1fr 120px;gap:8px;margin-bottom:6px;align-items:center;}
+  .custrow input[type=text]{font:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);}
+  .custtot{display:flex;justify-content:space-between;font-weight:800;font-size:15px;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;font-variant-numeric:tabular-nums;}
+  .foot{color:var(--muted);font-size:12px;margin-top:16px;text-align:center;line-height:1.6;}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bp"><div class="in">
+  <div class="hd">
+    <div>
+      <h1>Blossom Value &amp; Pricing Calculator</h1>
+      <p class="sub">Per planted acre · recommended tier from acres, users &amp; needs · barrels-to-cover-cost value view</p>
+      <span class="badge">Demo · draft pricing</span>
+    </div>
+    <button class="tog" id="themeBtn" type="button">◐ Theme</button>
+  </div>
+
+  <div class="grid">
+    <!-- LEFT: inputs -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <h2>Customer details</h2>
+        <div class="two">
+          <div class="fld"><label class="l" for="crop">Crop</label>
+            <select id="crop" class="yellow"></select></div>
+          <div class="fld"><label class="l" for="ppb">Price / BBL ($)</label>
+            <input id="ppb" class="yellow" type="number" min="0" step="1" value="40"></div>
+        </div>
+        <div class="fld"><label class="l" for="acres">Planted acres</label>
+          <input id="acres" class="yellow" type="number" min="0" step="1" value="200"></div>
+        <div class="two">
+          <div class="fld"><label class="l" for="prod">Total production (BBLs)</label>
+            <input id="prod" class="yellow" type="number" min="0" step="100" value="30000"></div>
+          <div class="fld"><label class="l" for="users">Users</label>
+            <input id="users" class="yellow" type="number" min="1" step="1" value="6"></div>
+        </div>
+        <div class="fld" style="margin-top:4px;">
+          <label class="switch" for="legacy"><input type="checkbox" id="legacy"><span class="trk"><span class="knb"></span></span>
+          <span style="font-size:13px;font-weight:600;">Legacy migration offer (2027)</span></label>
+          <p class="hint">Legacy Blossom, CranTrak or Bogs: <b>Pro features at the Starter price</b>, 100-acre cap waived, for 2027. Standard tiers from 2028.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Options this customer needs</h2>
+        <div class="opts" id="opts"></div>
+        <p class="hint" style="margin-top:8px;">Each option forces its minimum tier into the recommendation.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: results -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" aria-live="polite">
+        <div class="rtop">
+          <span class="tchip" id="tchip">Pro</span>
+          <div style="text-align:right;">
+            <div class="sl" id="annualLine"></div>
+            <div class="sl" id="billLine"></div>
+          </div>
+        </div>
+        <div class="price"><span id="priceMain">$0</span><span class="per"> / mo</span></div>
+        <div class="sl" id="basis"></div>
+        <div class="legacy-note" id="legacyNote" hidden></div>
+        <div class="warn" id="warnBox" hidden></div>
+
+        <div class="metrics">
+          <div class="metric"><div class="k">Cost / year</div><div class="v" id="mYr">$0</div></div>
+          <div class="metric"><div class="k">Billable acres</div><div class="v" id="mAc">0</div></div>
+          <div class="metric"><div class="k">BBLs to cover</div><div class="v" id="mBbl">0</div></div>
+          <div class="metric"><div class="k">% of crop</div><div class="v" id="mPct">0%</div></div>
+        </div>
+
+        <div class="yt">
+          <label for="yourTier">Your tier (raise if desired):</label>
+          <select id="yourTier"></select>
+          <span class="sl" id="recLine"></span>
+        </div>
+
+        <div class="drivers">
+          <div class="dh">Why this tier — drivers</div>
+          <div class="drow"><span>Acres</span><span class="dt" id="drAc">—</span></div>
+          <div class="drow"><span>Users</span><span class="dt" id="drUs">—</span></div>
+          <div class="drow"><span>Options checked</span><span class="dt" id="drOp">—</span></div>
+        </div>
+
+        <div class="compare" id="compare"></div>
+      </div>
+
+      <div class="card cust">
+        <h2>One-time customization (not in subscription)</h2>
+        <div id="custRows"></div>
+        <div class="custtot"><span>Customization total</span><span id="custTot">$0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">Working demo — logic mirrors the CustomerValueCalculator "BBLsNeeded" tab; pricing per the Blossom v2 draft tiers.<br>Not a customer quote. Confirm final tiers/pricing before publishing.</p>
+</div></div>
+
+<script>
+(function(){
+  var CFG={
+    tiers:{
+      starter:{label:"Starter",rank:1,rate:1.00,minAcres:50,recMax:100,users:5,color:"--starter",bg:"--starter-bg"},
+      pro:{label:"Pro",rank:2,rate:1.50,minAcres:50,recMax:1000,users:10,color:"--pro",bg:"--pro-bg"},
+      enterprise:{label:"Enterprise",rank:3,rate:3.00,minAcres:100,recMax:null,users:"Unlimited",color:"--ent",bg:"--ent-bg"}
+    },
+    order:["starter","pro","enterprise"], months:12,
+    options:[
+      ["Equipment tracking","pro"],["Operations calendar","pro"],["Inventory tracking","pro"],
+      ["Blossom Pinpoint integration","pro"],["QuickBooks integration","pro"],["Farm mapping","pro"],
+      ["Priority support","pro"],["Add-on modules","pro"],
+      ["Multi-location / unlimited farms","enterprise"],["Workorders & assignments","enterprise"],
+      ["AI Advisor","enterprise"],["Dedicated onboarding","enterprise"],
+      ["Personal account manager","enterprise"],["Premium support","enterprise"]
+    ],
+    crops:["Cranberry","Blueberry","Grapes","Apples","Nuts","Vegetables","Other Fruit","Other Specialty"],
+    customization:[["Discovery & Data Migration",15000],["Special Project 1",0],["Special Project 2",0],["Additional Support",6000]]
+  };
+  var rank2key={1:"starter",2:"pro",3:"enterprise"};
+  function cvar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+  function money(x){var o=(Math.round(x*100)%100===0)?{minimumFractionDigits:0,maximumFractionDigits:0}:{minimumFractionDigits:2,maximumFractionDigits:2};return x.toLocaleString("en-US",Object.assign({style:"currency",currency:"USD"},o));}
+  function num(x){return x.toLocaleString("en-US");}
+  var $=function(id){return document.getElementById(id);};
+
+  // build crop dropdown, options, your-tier, customization
+  CFG.crops.forEach(function(c){var o=document.createElement("option");o.textContent=c;$("crop").appendChild(o);});
+  var optsWrap=$("opts");
+  CFG.options.forEach(function(o,i){
+    var lab=document.createElement("label"); lab.className="opt";
+    lab.innerHTML='<input type="checkbox" data-tier="'+o[1]+'" id="opt'+i+'"><span class="nm">'+o[0]+'</span><span class="pill '+o[1]+'">'+CFG.tiers[o[1]].label+'</span>';
+    optsWrap.appendChild(lab);
+  });
+  CFG.order.forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=CFG.tiers[k].label;$("yourTier").appendChild(o);});
+  $("yourTier").value="pro";
+  var custWrap=$("custRows");
+  CFG.customization.forEach(function(c,i){
+    var r=document.createElement("div"); r.className="custrow";
+    r.innerHTML='<input type="text" value="'+c[0]+'" data-ci="'+i+'"><input type="number" class="yellow cust-amt" min="0" step="500" value="'+c[1]+'">';
+    custWrap.appendChild(r);
+  });
+
+  function acresRank(a){return a>1000?3:a>100?2:1;}
+  function usersRank(u){return u>10?3:u>5?2:1;}
+  function optionsRank(){var m=0;document.querySelectorAll('#opts input:checked').forEach(function(c){m=Math.max(m,CFG.tiers[c.dataset.tier].rank);});return m;}
+  function monthlyFor(key,a){var t=CFG.tiers[key];return t.rate*Math.max(a,t.minAcres);}
+
+  function render(){
+    var a=Math.max(0,parseFloat($("acres").value)||0);
+    var u=Math.max(1,parseFloat($("users").value)||1);
+    var ppb=Math.max(0,parseFloat($("ppb").value)||0);
+    var prod=Math.max(0,parseFloat($("prod").value)||0);
+    var legacy=$("legacy").checked;
+    var ar=acresRank(a), ur=usersRank(u), or_=optionsRank();
+    var recRank=Math.max(ar,ur,or_||1);
+    var recKey=rank2key[recRank];
+
+    // your tier must be >= nothing enforced; user picks
+    var yourKey=$("yourTier").value;
+    var yourRank=CFG.tiers[yourKey].rank;
+
+    // headline: legacy 2027 offer overrides to Pro-at-Starter-price
+    var headKey, headMonthly, headLabelExtra="", billAcres;
+    if(legacy){
+      headKey="pro"; billAcres=Math.max(a,CFG.tiers.starter.minAcres);
+      headMonthly=CFG.tiers.starter.rate*billAcres; // Pro features, Starter price
+      headLabelExtra=" · at Starter price (2027)";
+    } else {
+      headKey=yourKey; billAcres=Math.max(a,CFG.tiers[yourKey].minAcres);
+      headMonthly=monthlyFor(yourKey,a);
+    }
+    var yr=headMonthly*CFG.months;
+    var bbls=ppb>0?Math.ceil(yr/ppb):0;
+    var pct=prod>0?(bbls/prod):0;
+
+    var t=CFG.tiers[headKey];
+    var chip=$("tchip"); chip.textContent=t.label+(headKey==="pro"&&!legacy?" · Most Popular":"")+headLabelExtra;
+    chip.style.color=cvar(t.color); chip.style.background=cvar(t.bg);
+    $("priceMain").textContent=money(headMonthly);
+    $("annualLine").textContent=money(yr)+" / yr";
+    $("billLine").textContent="up to "+ (t.users==="Unlimited"?"unlimited":t.users) +" users";
+    // basis
+    var floorAcres=CFG.tiers[legacy?"starter":headKey].minAcres;
+    var rate=legacy?CFG.tiers.starter.rate:t.rate;
+    $("basis").textContent = num(a)+" acres × "+money(rate)+"/acre"+(a<floorAcres?(" (billed at "+floorAcres+"-acre minimum)"):"");
+
+    // legacy note
+    var ln=$("legacyNote");
+    if(legacy){
+      ln.hidden=false;
+      var recMo=monthlyFor(recKey,a);
+      ln.innerHTML="<b>2027 migration year:</b> Pro features at the Starter rate, 100-acre cap waived. "+
+        "From 2028, standard pricing — recommended tier <b>"+CFG.tiers[recKey].label+"</b> at "+money(recMo)+"/mo.";
+    } else ln.hidden=true;
+
+    // warning (only meaningful in standard mode)
+    var wb=$("warnBox");
+    if(!legacy && yourRank<recRank){
+      wb.hidden=false;
+      wb.textContent="⚠ Below recommended ("+CFG.tiers[recKey].label+") — some needed options aren't available on "+t.label+".";
+    } else wb.hidden=true;
+
+    // metrics
+    $("mYr").textContent=money(yr);
+    $("mAc").textContent=num(Math.max(a,floorAcres));
+    $("mBbl").textContent=num(bbls);
+    $("mPct").textContent=(pct*100).toLocaleString("en-US",{minimumFractionDigits:pct<0.01&&pct>0?2:1,maximumFractionDigits:2})+"%";
+
+    // drivers
+    $("drAc").textContent=CFG.tiers[rank2key[ar]].label+"  ("+num(a)+" ac)";
+    $("drUs").textContent=CFG.tiers[rank2key[ur]].label+"  ("+num(u)+")";
+    $("drOp").textContent=or_?CFG.tiers[rank2key[or_]].label:"—";
+    $("recLine").textContent="Recommended: "+CFG.tiers[recKey].label;
+
+    // compare cards (standard prices; highlight recommended)
+    var comp=$("compare"); comp.innerHTML="";
+    CFG.order.forEach(function(k){
+      var tt=CFG.tiers[k], mo=monthlyFor(k,a), isRec=(k===recKey);
+      var cap=tt.recMax?("≤"+num(tt.recMax)+" ac"):(">1,000 ac");
+      var el=document.createElement("div"); el.className="tc"+(isRec?" sel":"");
+      el.innerHTML=(isRec?'<span class="rec">Recommended</span>':'')+
+        '<div class="tn" style="color:'+cvar(tt.color)+'">'+tt.label+'</div>'+
+        '<div class="tp">'+money(mo)+'<span style="font-size:11px;font-weight:600;color:var(--muted)"> /mo</span></div>'+
+        '<div class="tm">'+money(tt.rate)+'/ac · '+cap+'</div>';
+      comp.appendChild(el);
+    });
+
+    // customization total
+    var ct=0; document.querySelectorAll('.cust-amt').forEach(function(i){ct+=Math.max(0,parseFloat(i.value)||0);});
+    $("custTot").textContent=money(ct);
+  }
+
+  document.addEventListener("input",render);
+  document.addEventListener("change",render);
+  $("themeBtn").addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme");
+    var next=cur==="dark"?"light":cur==="light"?"dark":(matchMedia("(prefers-color-scheme:dark)").matches?"light":"dark");
+    document.documentElement.setAttribute("data-theme",next); render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>
